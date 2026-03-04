@@ -1,7 +1,7 @@
-import { BsFillCalendarWeekFill, BsCheck2 } from "react-icons/bs";
-import type { Task, Priority } from "../types/api";
-import { PrioritySelect } from "./PrioritySelect";
-import { updateTaskById } from "../api/endpoints/task";
+import { BsFillCalendarWeekFill } from "react-icons/bs";
+import { PriorityTag } from "./PriorityTag";
+import { TaskFinishButton } from "./TaskFinishButton";
+import type { Task } from "../types/api";
 
 interface TaskCardProps {
     task: Task;
@@ -14,7 +14,7 @@ export function TaskCard({ task, onClick, refetchLists }: TaskCardProps) {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR', {
             day: 'numeric',
-            month: 'numeric',
+            month: 'short',
             year: 'numeric'
         }).toUpperCase();
     }
@@ -32,32 +32,6 @@ export function TaskCard({ task, onClick, refetchLists }: TaskCardProps) {
         return expectedDate < now;
     };
 
-    const handleToggleFinish = async (e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        try {
-            const updates = task.finishDate
-                ? { finishDate: null }
-                : { finishDate: new Date().toISOString() };
-
-            await updateTaskById(task.id, updates);
-            await refetchLists();
-        } catch (err) {
-            console.error('Failed to update task finish status:', err);
-        }
-    };
-
-    const handlePriorityChange = async (newPriority: Priority) => {
-        if (newPriority === task.priority) return;
-
-        try {
-            await updateTaskById(task.id, { priority: newPriority });
-            await refetchLists();
-        } catch (err) {
-            console.error('Failed to update task priority:', err);
-        }
-    };
-
     const isTaskFinished = !!task.finishDate;
 
     return (
@@ -73,31 +47,16 @@ export function TaskCard({ task, onClick, refetchLists }: TaskCardProps) {
             {/* Header with Priority and Finish Button */}
             <div className="flex justify-between items-center mb-3">
                 <div onClick={(e) => e.stopPropagation()}>
-                    <PrioritySelect
-                        value={task.priority}
-                        onChange={handlePriorityChange}
-                        mode="badge"
+                    <PriorityTag
+                        priority={task.priority}
                     />
                 </div>
 
-                <button
-                    onClick={handleToggleFinish}
-                    className="flex items-center gap-2 transition duration-300 ease-out group"
-                    title={isTaskFinished ? 'Marcar como não concluída' : 'Marcar como concluída'}
-                >
-                    <span className={`w-8 h-8 rounded-full border border-dashed flex items-center justify-center transition duration-300 ease-out ${isTaskFinished
-                        ? 'border-lowPrioText text-lowPrioText group-hover:border-[#15C384] group-hover:text-[#15C384]'
-                        : 'border-white text-white group-hover:border-[#15C384] group-hover:text-[#15C384]'
-                    }`}>
-                        <BsCheck2 className="w-4 h-4" />
-                    </span>
-                    <span className={`transition duration-300 ease-out ${isTaskFinished
-                        ? 'text-lowPrioText group-hover:text-[#15C384]'
-                        : 'text-white group-hover:text-[#15C384]'
-                    }`}>
-                        {isTaskFinished ? 'Finalizado' : 'Finalizar'}
-                    </span>
-                </button>
+                <TaskFinishButton
+                    taskId={task.id}
+                    finishDate={task.finishDate}
+                    onSuccess={refetchLists}
+                />
 
             </div>
 

@@ -18,7 +18,7 @@ const getPriorityStyles = (priority: string): string => {
     case 'VERY_HIGH':
       return 'bg-veryHighPrio text-veryHighPrioText';
     default:
-      return 'bg-gray-500 text-white';
+      return 'text-white/40 text-sm'
   }
 };
 
@@ -36,7 +36,7 @@ export function PriorityTag({ priority }: PriorityTagProps) {
 
   return (
     <span
-      className={`px-4 py-1 rounded text-sm font-semibold inline-flex items-center outline-none ${getPriorityStyles(priority)
+      className={`px-4 py-1 rounded text-sm font-semibold inline-flex items-center whitespace-nowrap ${getPriorityStyles(priority)}
         }`}
     >
       {displayLabel}

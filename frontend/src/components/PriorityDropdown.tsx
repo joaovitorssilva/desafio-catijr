@@ -20,7 +20,7 @@ export function PriorityDropdownItem({ option, isSelected, onClick }: PriorityDr
   return (
     <button
       onClick={onClick}
-      className={`w-full px-2 py-1 rounded hover:bg-options-button-hover hover:border-l-2 border-white duration-100 ease-out flex items-center outline-none ${isSelected ? 'border-l-2 border-white' : ''}`}
+      className={`w-full px-2 py-1 rounded hover:bg-options-button-hover hover:border-l-2 border-white duration-100 ease-out flex items-center ${isSelected ? 'border-l-2 border-white' : ''}`}
     >
       <PriorityTag priority={option.value} />
     </button>
@@ -60,7 +60,7 @@ export function PriorityDropdown({ value, onChange, disabled = false }: Priority
       <button
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`flex items-center px-2 py-1 gap-5 rounded border border-line ${value ? '' : 'bg-bg text-white text-sm'} ${disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:opacity-80'} transition duration-200`}
+        className={`flex items-center px-2 py-1 gap-5 rounded border border-line ${disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:opacity-80'} transition duration-200`}
       >
         <PriorityTag priority={value} />
         <BsCaretDownFill className={`text-white ${isOpen ? 'rotate-180 transition duration-300 ' : ''}`}/>
