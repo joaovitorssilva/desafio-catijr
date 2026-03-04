@@ -4,6 +4,7 @@ import { TaskCard } from './TaskCard';
 import { TaskModal } from './TaskModal';
 import { CreateTaskBtn } from './ui/CreateTaskBtn'
 import { updateListById, deleteListById } from '../api/endpoints/Lists';
+import { useToast } from '../contexts/ToastContext';
 import { BsThreeDots } from 'react-icons/bs';
 
 interface ListProps {
@@ -21,6 +22,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists }: ListProps) 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editTitle, setEditTitle] = useState(name);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { showToast } = useToast();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -106,6 +108,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists }: ListProps) 
     try {
       await deleteListById(String(id));
       await refetchLists();
+      showToast('Lista deletada com sucesso');
     } catch (err) {
       console.error('Failed to delete list:', err);
     }

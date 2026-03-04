@@ -6,6 +6,7 @@ import { BsArrowBarRight, BsFillCalendarWeekFill } from "react-icons/bs";
 import { TaskFinishButton } from "./TaskFinishButton";
 import DatePicker from "react-datepicker";
 import { ptBR } from 'date-fns/locale';
+import { useToast } from "../contexts/ToastContext";
 import type { Priority, Task } from "../types/api";
 
 interface TaskModalProps {
@@ -24,6 +25,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
   const [priority, setPriority] = useState<Priority | "">(mode === 'edit' && task ? (task.priority || "") : "");
   const [date, setDate] = useState<Date | null>(mode === 'edit' && task && task.expectedFinishDate ? new Date(task.expectedFinishDate) : null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { showToast } = useToast();
 
   const handleSubmit = async () => {
     try {
@@ -58,6 +60,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
       setIsDeleteModalOpen(false);
       onClose();
       await refetchLists();
+      showToast('Tarefa deletada com sucesso');
     } catch (err) {
       console.error('Failed to delete task:', err);
     }
@@ -78,6 +81,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
         >
 
           {/*============HEADER============ */}
+          
           <div className="flex items-center justify-between mb-4 px-17">
             <button
               onClick={onClose}

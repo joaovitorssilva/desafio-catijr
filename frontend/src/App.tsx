@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "./components/Navbar";
 import { Board } from "./components/Board";
+import { ToastProvider } from "./contexts/ToastContext";
 
 import { getLists } from "./api/endpoints/Lists";
 import type { List } from "./types/api";
@@ -29,9 +30,9 @@ export function App() {
   }
 
   return (
-    <>
+    <ToastProvider>
       <Navbar />
       <Board lists={lists} refetchLists={fetchLists} />
-    </>
+    </ToastProvider>
   );
 }
