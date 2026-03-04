@@ -34,4 +34,8 @@ export class CreateTaskDto {
   @IsInt()
   @IsNotEmpty()
   listId: number;
+
+  @IsInt()
+  @IsOptional()
+  position?: number
 }

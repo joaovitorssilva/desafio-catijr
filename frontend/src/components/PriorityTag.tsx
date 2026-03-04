@@ -18,7 +18,7 @@ const getPriorityStyles = (priority: string): string => {
     case 'VERY_HIGH':
       return 'bg-veryHighPrio text-veryHighPrioText';
     default:
-      return 'text-white/40 text-sm'
+      return 'text-date-text text-sm'
   }
 };
 

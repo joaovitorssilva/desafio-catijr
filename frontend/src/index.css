@@ -91,3 +91,7 @@
 .react-datepicker__triangle {
   display: none;
 }
+
+.date-picker-input::placeholder {
+  color: var(--color-date-text);
+}

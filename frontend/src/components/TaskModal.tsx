@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createTask, updateTaskById, deleteTaskById } from "../api/endpoints/task";
 import { PriorityDropdown } from "./PriorityDropdown";
-import { AiFillDelete } from "react-icons/ai";
+import { DeleteModal } from "./ui/DeleteModal";
 import { BsArrowBarRight, BsFillCalendarWeekFill } from "react-icons/bs";
 import { TaskFinishButton } from "./TaskFinishButton";
 import DatePicker from "react-datepicker";
@@ -103,7 +103,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
             <input
               type="text"
               placeholder="Título"
-              className="font-bold text-3xl text-white bg-transparent rounded-md p-2  focus:outline-none focus:ring ring-white transition duration-300 ease-out"
+              className="font-bold text-3xl text-white bg-transparent rounded-md p-2  focus:outline-none focus:ring ring-white transition duration-300 ease-out placeholder:text-date-text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -122,7 +122,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
                   dateFormat="dd  MMM',' yyyy"
                   locale={ptBR as any}
                   placeholderText="dd/mm/yyyy"
-                  className="bg-transparent text-white text-sm font-semibold uppercase w-28"
+                  className="bg-transparent text-white text-sm font-semibold uppercase w-28 date-picker-input"
                   popperClassName="z-50"
                   minDate={new Date()}
                 />
@@ -151,7 +151,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
                 placeholder="Descrição"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="p-2 min-h-[100px] resize-y rounded-md bg-transparent text-white border border-white focus:outline-none focus:ring ring-white transition duration-200"
+                className="p-2 min-h-[100px] resize-y rounded-md bg-transparent text-white border border-white focus:outline-none focus:ring ring-white transition duration-200 placeholder:text-date-text"
               />
             </div>
 
@@ -174,7 +174,6 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
                     className="flex gap-2 items-center 1 text-danger rounded-md p-2 w-ful hover:bg-options-button-hover transition duration-300 ease-out cursor-pointer"
                     aria-label="Delete task"
                   >
-                    <AiFillDelete className="w-6 h-6" />
                     Deletar
                   </button>
                 )}
@@ -185,30 +184,12 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
       </div>
 
       {/* Delete Confirmation Modal */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black/80 z-60 flex items-center justify-center">
-          <div className="bg-bg p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
-            <h3 className="text-white text-lg font-semibold mb-4">Deletar Tarefa</h3>
-            <p className="text-gray-300 mb-6">
-              Tem certeza que deseja deletar essa lista?
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="px-4 py-2 text-white hover:bg-options-button-hover rounded transition duration-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-danger text-white rounded hover:bg-red-700 transition duration-200"
-              >
-                Deletar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        itemName={`a tarefa "${title}"?`}
+      />
     </>
   );
 }

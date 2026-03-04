@@ -18,7 +18,7 @@ export class ListsService {
       include: {
         tasks: {
           orderBy: {
-            createdAt: 'asc',
+            position: 'asc',
           },
         },
       },
@@ -31,7 +31,7 @@ export class ListsService {
       include: {
         tasks: {
           orderBy: {
-            createdAt: 'asc',
+            position: 'asc',
           },
         },
       },

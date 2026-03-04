@@ -15,7 +15,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) { }
 
   @Post()
   create(@Body() createTaskDto: CreateTaskDto) {
@@ -37,6 +37,15 @@ export class TasksController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     const task = await this.tasksService.update(+id, updateTaskDto);
+    if (!task) throw new NotFoundException();
+    return task;
+  }
+
+  @Patch(':id/position')
+  async updatePosition(
+    @Param('id') id: string,
+    @Body() body: { position: number, listId: number }) {
+    const task = await this.tasksService.updatePosition(+id, body.position, body.listId);
     if (!task) throw new NotFoundException();
     return task;
   }

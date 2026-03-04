@@ -1,6 +1,8 @@
 import { BsFillCalendarWeekFill } from "react-icons/bs";
 import { PriorityTag } from "./PriorityTag";
 import { TaskFinishButton } from "./TaskFinishButton";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "../types/api";
 
 interface TaskCardProps {
@@ -10,6 +12,20 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, onClick, refetchLists }: TaskCardProps) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: task.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR', {
@@ -36,8 +52,12 @@ export function TaskCard({ task, onClick, refetchLists }: TaskCardProps) {
 
     return (
         <div
+            ref={setNodeRef}
+            style={style}
+            {...attributes}
+            {...listeners}
             onClick={onClick}
-            className={`rounded-lg border p-2 cursor-pointer transition duration-300 ease-out ${isTaskFinished
+            className={`rounded-lg border p-2 cursor-pointer transition duration-300 ease-out ${isDragging ? 'opacity-0' : ''} ${isTaskFinished
                 ? 'border-line bg-transparent opacity-40'
                 : isLate()
                     ? 'border-line hover:border-white hover:bg-linear-to-r from-[#553434] to-[#381D1D] transition duration-300 ease-out'

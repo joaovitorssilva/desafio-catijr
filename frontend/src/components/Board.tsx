@@ -1,8 +1,19 @@
-import { useState } from "react";
-import type { List } from "../types/api";
+import { useState, useEffect } from "react";
+import type { List, Task } from "../types/api";
 import { createList } from "../api/endpoints/Lists";
-import { BsFillPlusCircleFill } from "react-icons/bs";
+import { updateTaskPosition } from "../api/endpoints/task";
 import { ListComponent } from "./ListComponent";
+import { CreateListModal, AddListButton } from "./ui/CreateListModal";
+import {
+  DndContext,
+  DragOverlay,
+  closestCorners,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
 interface BoardProps {
   lists: List[];
@@ -11,104 +22,174 @@ interface BoardProps {
 
 export function Board({ lists, refetchLists }: BoardProps) {
   const [modal, setModal] = useState(false);
-  const [listNameInput, setListNameInput] = useState("");
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [localLists, setLocalLists] = useState<List[]>(lists);
+
+  useEffect(() => {
+    setLocalLists(lists);
+  }, [lists]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
+      },
+    })
+  );
 
   const openModal = (e: React.MouseEvent) => {
     e.preventDefault();
     setModal(true);
   };
 
-  const closeModal = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setModal(false);
+  const handleCreateList = async (name: string) => {
+    await createList({ name });
+    await refetchLists();
   };
 
-  const verifySameListName = (listName: string) => {
-    for (let i = 0; i < lists.length; i++) {
-      if (listName === lists[i].name) {
-        return true;
+  const handleDragStart = (event: DragStartEvent) => {
+    const taskId = event.active.id as number;
+    for (const list of localLists) {
+      const task = list.tasks.find((t) => t.id === taskId);
+      if (task) {
+        setActiveTask(task);
+        break;
       }
     }
-    return false;
   };
 
-  const createThisList = async (e: React.MouseEvent) => {
-    try {
-      e.preventDefault();
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveTask(null);
 
-      if (listNameInput.trim() === "") {
-        return;
-      } 
+    if (!over) return;
 
-      if (verifySameListName(listNameInput)) {
-        return;
+    const activeId = active.id as number;
+    const overId = over.id as number;
+
+    let draggedTask: Task | undefined;
+    let sourceListId: number = 0;
+    let sourceIndex: number = 0;
+
+    for (const list of localLists) {
+      const idx = list.tasks.findIndex((t) => t.id === activeId);
+      if (idx !== -1) {
+        draggedTask = list.tasks[idx];
+        sourceListId = list.id;
+        sourceIndex = idx;
+        break;
       }
+    }
 
-      const newList = {
-        name: listNameInput.trim(),
-      };
+    if (!draggedTask) return;
 
-      await createList(newList);
-      setListNameInput("");
+    const isDroppedOnList = localLists.some((l) => l.id === overId);
+    const targetListId = isDroppedOnList ? overId : localLists.find((l) => l.tasks.some((t) => t.id === overId))?.id;
+
+    if (!targetListId) return;
+
+    let newPosition: number;
+    if (isDroppedOnList) {
+      newPosition = localLists.find((l) => l.id === targetListId)?.tasks.length || 0;
+    } else {
+      const targetList = localLists.find((l) => l.id === targetListId);
+      const overTaskIndex = targetList?.tasks.findIndex((t) => t.id === overId) ?? 0;
+      newPosition = overTaskIndex;
+    }
+
+    if (sourceListId === targetListId && draggedTask.position === newPosition) return;
+
+    const newLists = localLists.map(list => ({
+      ...list,
+      tasks: [...list.tasks]
+    }));
+
+    const sourceList = newLists.find(l => l.id === sourceListId);
+    const targetList = newLists.find(l => l.id === targetListId);
+
+    if (!sourceList || !targetList) return;
+
+    sourceList.tasks.splice(sourceIndex, 1);
+
+    let targetIndex = newPosition;
+    if (sourceListId === targetListId && sourceIndex < newPosition) {
+      targetIndex = Math.max(0, newPosition - 1);
+    }
+
+    const movedTask = { ...draggedTask, listId: targetListId, position: targetIndex };
+    targetList.tasks.splice(targetIndex, 0, movedTask);
+
+    targetList.tasks.forEach((t, idx) => {
+      t.position = idx;
+    });
+
+    if (sourceListId !== targetListId) {
+      sourceList.tasks.forEach((t, idx) => {
+        t.position = idx;
+      });
+    }
+
+    setLocalLists(newLists);
+
+    try {
+      await updateTaskPosition(activeId, newPosition, targetListId);
       await refetchLists();
-      closeModal(e);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to update position:", err);
+      setLocalLists(lists);
+      await refetchLists();
     }
   };
 
   return (
-    <div className="bg-bg flex flex-col md:flex-row gap-4 overflow-x-auto p-8 min-h-screen w-full ">
-      {lists.map((list) => (
-        <ListComponent
-          key={list.id}
-          id={list.id}
-          name={list.name}
-          propTasks={list.tasks}
-          refetchLists={refetchLists}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="bg-bg flex flex-col md:flex-row gap-4 overflow-x-auto p-8 min-h-screen w-full">
+        {localLists.map((list) => (
+          <ListComponent
+            key={list.id}
+            id={list.id}
+            name={list.name}
+            propTasks={list.tasks}
+            refetchLists={refetchLists}
+          />
+        ))}
+        <AddListButton onClick={openModal} />
+
+        <CreateListModal
+          isOpen={modal}
+          onClose={(e) => {
+            e?.preventDefault();
+            setModal(false);
+          }}
+          onSubmit={handleCreateList}
+          existingListNames={localLists.map((l) => l.name)}
         />
-      ))}
-      <div className="rounded-md flex flex-col gap-4 min-w-[300px] w-[300px] h-min shrink-0 relative top-2">
-        <button
-          onClick={(e) => openModal(e)}
-          className="text-white w-full flex items-center gap-2 font-semibold text-sm p-2 rounded-xl hover:bg-options-button-hover transition duration-300 ease-out cursor-pointer"
-        >
-          <BsFillPlusCircleFill className="w-6 h-6" />
-          Nova Lista
-        </button>
       </div>
 
-      {modal && (
-        <div
-          className="fixed inset-0 bg-black/90 bg-opacity-50 z-50 flex items-center justify-center text-white"
-          onClick={(e) => closeModal(e)}
-        >
-          <div
-            className="bg-bg p-4 rounded shadow-lg w-full max-w-md relative flex flex-col gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={(e) => closeModal(e)}
-              className="absolute top-2 right-2 text-black text-xl hover:text-red-400 font-extrabold px-2 hover:bg-red-900/20 rounded-full cursor-pointer"
-            >
-              x
-            </button>
-            <p>Criar Lista</p>
-            <p className="flex mt-4">Nome da Lista:</p>
-            <input
-              type="text"
-              className="p-2 border-2 border-stone-100/10 rounded-xl focus:outline-none focus:ring focus:ring-white hover:ring hover:ring-white transition duration-200"
-              onChange={(e) => setListNameInput(e.target.value)}
+      <DragOverlay>
+        {activeTask ? (
+          <div className="opacity-80 cursor-grabbing">
+            <ListComponent
+              id={activeTask.listId}
+              name=""
+              propTasks={[activeTask]}
+              refetchLists={refetchLists}
+              isDragOverlay
             />
-            <button
-              onClick={(e) => createThisList(e)}
-              className="mt-6 bg-white text-black font-extrabold p-1 rounded-xl hover:bg-black hover:text-white transition duration-300 ease-out cursor-pointer"
-            >
-              Criar Lista
-            </button>
           </div>
-        </div>
-      )}
-    </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }

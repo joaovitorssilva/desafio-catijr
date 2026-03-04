@@ -18,6 +18,7 @@ CREATE TABLE "Task" (
     "expectedFinishDate" TIMESTAMP(3),
     "finishDate" TIMESTAMP(3),
     "listId" INTEGER NOT NULL,
+    "position" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

@@ -22,6 +22,11 @@ export const updateTaskById = async (id: number, data: Partial<Task>): Promise<T
   return response.data as Task
 }
 
+export const updateTaskPosition = async (id: number, position: number, listId: number): Promise<Task> => {
+  const response = await api.patch(`/tasks/${id}/position`, { position, listId })
+  return response.data as Task
+}
+
 export const deleteTaskById = async (id: number): Promise<void> => {
   await api.delete(`/tasks/${id}`)
 }
