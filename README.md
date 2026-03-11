@@ -6,24 +6,71 @@ A full-stack task management application with a Kanban-style board interface. Us
 
 ## Table of Contents
 
-1. [Architecture Overview](#architecture-overview)
-2. [Tech Stack](#tech-stack)
-3. [Project Structure](#project-structure)
-4. [Database Schema](#database-schema)
-5. [API Endpoints](#api-endpoints)
-6. [Frontend Components](#frontend-components)
-7. [Data Flow](#data-flow)
-8. [Diagrams](#diagrams)
-9. [Setup & Installation](#setup--installation)
+1. [Setup & Installation](#setup--installation)
+2. [Architecture Overview](#architecture-overview)
+3. [Tech Stack](#tech-stack)
+4. [Project Structure](#project-structure)
+5. [Database Schema](#database-schema)
+6. [API Endpoints](#api-endpoints)
+7. [Frontend Components](#frontend-components)
+8. [Data Flow](#data-flow)
+9. [Diagrams](#diagrams)
 10. [Running the Application](#running-the-application)
 
+---
+
+## Setup & Installation
+
+### Prerequisites
+
+- **Node.js** (v18+)
+- **npm** or **yarn**
+- **PostgreSQL** (running on port 5432)
+
+### Backend Setup
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Install dependencies
+npm install
+
+# Generate Prisma client (after fixing the schema)
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev
+
+# Start development server
+npm run start:dev
+```
+
+The backend will run on `http://localhost:8000`
+
+### Frontend Setup
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+The frontend will run on `http://localhost:5173` (default Vite port)
+
+---
 ---
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         APPLICATION ARCHITECTURE                     │
+│                         APPLICATION ARCHITECTURE                    │
 └─────────────────────────────────────────────────────────────────────┘
 
     ┌──────────────┐                         ┌──────────────┐
@@ -37,7 +84,7 @@ A full-stack task management application with a Kanban-style board interface. Us
                             │
                             ▼
     ┌──────────────────────────────────────────────────────────────┐
-    │                        POSTGRES DATABASE                      │
+    │                        POSTGRES DATABASE                     │
     │                     (Managed by Prisma ORM)                  │
     └──────────────────────────────────────────────────────────────┘
 ```
@@ -46,19 +93,19 @@ A full-stack task management application with a Kanban-style board interface. Us
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                           REQUEST FLOW                                    │
+│                           REQUEST FLOW                                   │
 └──────────────────────────────────────────────────────────────────────────┘
 
   1. User Action          2. React Component         3. API Call
   ┌─────────────┐         ┌─────────────┐           ┌─────────────┐
   │  Click on   │────────▶│  Updates    │──────────▶│   axios     │
-  │  "Create"   │         │  local state │           │   request   │
+  │  "Create"   │         │ local state │           │   request   │
   └─────────────┘         └─────────────┘           └──────┬──────┘
                                                            │
                           4. NestJS Controller             │
                           ┌─────────────┐                  │
-                          │  Receives  │◀─────────────────┘
-                          │  request   │
+                          │  Receives   │◀─────────────────┘
+                          │  request    │
                           └──────┬──────┘
                                  │
                                  ▼
@@ -281,12 +328,12 @@ model Task {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         FRONTEND COMPONENT TREE                              │
+│                         FRONTEND COMPONENT TREE                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 
                               ┌─────────────┐
                               │    App      │
-                              │  (Root)     │
+                              │   (Root)    │
                               └──────┬──────┘
                                      │
               ┌──────────────────────┼──────────────────────┐
@@ -297,24 +344,24 @@ model Task {
       └─────────────┘        └──────┬──────┘        │             │
                                    │                │             │
               ┌────────────────────┼────────────────┘             │
-              │                    │                                │
-              ▼                    ▼                                │
-      ┌─────────────┐        ┌─────────────┐                        │
+              │                    │                              │
+              ▼                    ▼                              │
+      ┌─────────────┐        ┌─────────────┐                      │
       │ListComponent│        │ListComponent│◀──────┐              │
       └──────┬──────┘        └──────┬──────┘       │              │
              │                      │              │              │
-    ┌────────┴────────┐    ┌────────┴────────┐    │              │
-    │                 │    │                 │    │              │
-    ▼                 ▼    ▼                 ▼    ▼              │
-┌────────┐      ┌──────────┐  ┌────────┐  ┌──────────┐  ┌─────────┐ │
-│TaskCard│      │TaskModal│  │TaskCard│  │TaskModal│  │Create   │
+    ┌────────┴────────┐    ┌────────┴────────┐     │              │
+    │                 │    │                 │     │              │
+    ▼                 ▼    ▼                 ▼     ▼              │
+┌────────┐      ┌──────────┐  ┌────────┐  ┌──────────┐  ┌─────────┐ 
+│TaskCard│      │TaskModal │  │TaskCard│  │TaskModal │  │Create   │
 └────────┘      └──────────┘  └────────┘  └──────────┘  │TaskBtn  │
-                                                       └─────────┘ │
+                                                        └─────────┘ 
                                               ┌─────────────────┘
                                               │
                                               ▼
                                     ┌─────────────────┐
-                                    │ PrioritySelect │
+                                    │ PrioritySelect  │
                                     └─────────────────┘
 ```
 
@@ -339,7 +386,7 @@ model Task {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    CREATE TASK DATA FLOW                                     │
+│                    CREATE TASK DATA FLOW                                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 User clicks "Nova Tarefa"
@@ -404,7 +451,7 @@ New task appears in the list
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    INITIAL DATA LOAD FLOW                                    │
+│                    INITIAL DATA LOAD FLOW                                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 App component mounts
@@ -454,17 +501,17 @@ Board maps through lists and renders ListComponent for each
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        COMPLETE SYSTEM VIEW                                  │
+│                        COMPLETE SYSTEM VIEW                                 │
 └─────────────────────────────────────────────────────────────────────────────┘
 
                               ┌─────────────────┐
-                              │   User Browser   │
+                              │   User Browser  │
                               └────────┬────────┘
                                        │ HTTP Requests
                                        │ (port 8000)
                                        ▼
-                              ┌─────────────────┐
-                              │   NestJS Server  │
+                              ┌───────────────────┐
+                              │   NestJS Server   │
                               │   (backend/src)   │
                               │                   │
                               │ ┌───────────────┐ │
@@ -483,7 +530,7 @@ Board maps through lists and renders ListComponent for each
                               │ │ PrismaModule  │ │
                               │ │ - Service     │ │
                               │ └───────────────┘ │
-                              └────────┬────────┘
+                              └────────┬──────────┘
                                        │ Prisma Client
                                        │ (generated/prisma)
                                        ▼
@@ -502,49 +549,48 @@ Board maps through lists and renders ListComponent for each
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       FRONTEND STATE FLOW                                    │
+│                       FRONTEND STATE FLOW                                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ App.tsx                                                                     │
-│ ┌───────────────────────────────────────────────────────────────────────┐ │
-│ │ State:                                                                │ │
-│ │ - lists: List[]          ←── Main data                               │ │
-│ │ - initialLoading: boolean ←── Loading state                          │ │
-│ │                                                                         │ │
-│ │ Methods:                                                              │ │
-│ │ - fetchLists(): Promise<void>                                        │ │
-│ │   └── Calls getLists() API → setLists(data)                         │ │
-│ └───────────────────────────────────────────────────────────────────────┘ │
+│ ┌───────────────────────────────────────────────────────────────────────┐   │
+│ │ State:                                                                │   │
+│ │ - lists: List[]          ←── Main data                                │   │
+│ │ - initialLoading: boolean ←── Loading state                           │   │
+│ │                                                                       │   │
+│ │ Methods:                                                              │   │
+│ │ - fetchLists(): Promise<void>                                         │   │
+│ │   └── Calls getLists() API → setLists(data)                           │   │
+│ └───────────────────────────────────────────────────────────────────────┘   │
 └───────────────────────────────┬─────────────────────────────────────────────┘
                                 │ props: { lists, refetchLists }
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Board.tsx                                                                   │
-│ ┌───────────────────────────────────────────────────────────────────────┐ │
-│ │ Props:                                                                │ │
-│ │ - lists: List[]                                                       │ │
-│ │ - refetchLists: () => Promise<void>                                  │ │
-│ │                                                                         │ │
-│ │ Renders:                                                              │ │
-│ │ - Maps lists → ListComponent                                          │ │
-│ │ - "Nova Lista" button → Create list modal                            │ │
-│ └───────────────────────────────────────────────────────────────────────┘ │
+│ ┌───────────────────────────────────────────────────────────────────────┐   │
+│ │ Props:                                                                │   │
+│ │ - lists: List[]                                                       │   │
+│ │ - refetchLists: () => Promise<void>                                   │   │
+│ │                                                                       │   │
+│ │ Renders:                                                              │   │
+│ │ - Maps lists → ListComponent                                          │   │
+│ │ - "Nova Lista" button → Create list modal                             │   │
+│ └───────────────────────────────────────────────────────────────────────┘   │
 └───────────────────────────────┬─────────────────────────────────────────────┘
                                 │
           ┌─────────────────────┼─────────────────────┐
           │                     │                     │
           ▼                     ▼                     ▼
 ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
-│ ListComponent  │   │ ListComponent  │   │ ListComponent  │
+│ ListComponent   │   │ ListComponent   │   │ ListComponent   │
 │ (List 1)        │   │ (List 2)        │   │ (List 3)        │
 ├─────────────────┤   ├─────────────────┤   ├─────────────────┤
 │ id: 1           │   │ id: 2           │   │ id: 3           │
-│ name: "To Do"  │   │ name: "Doing"   │   │ name: "Done"   │
-│ tasks: [...]   │   │ tasks: [...]   │   │ tasks: [...]   │
+│ name: "To Do"   │   │ name: "Doing"   │   │ name: "Done"    │
+│ tasks: [...]    │   │ tasks: [...]    │   │ tasks: [...]    │
 │                 │   │                 │   │                 │
-│ - TaskCard x3  │   │ - TaskCard x2   │   │ - TaskCard x1  │
-│ - TaskModal    │   │ - TaskModal     │   │ - TaskModal    │
+│ - TaskModal     │   │ - TaskModal     │   │ - TaskModal     │
 └─────────────────┘   └─────────────────┘   └─────────────────┘
 ```
 
@@ -614,54 +660,6 @@ DELETE /tasks/:id
   └── prisma.task.delete({ where: { id } })
        └── DELETE FROM "Task" WHERE id = ?
 ```
-
----
-
-## Setup & Installation
-
-### Prerequisites
-
-- **Node.js** (v18+)
-- **npm** or **yarn**
-- **PostgreSQL** (running on port 5432)
-
-### Backend Setup
-
-```bash
-# Navigate to backend directory
-cd backend
-
-# Install dependencies
-npm install
-
-# Generate Prisma client (after fixing the schema)
-npx prisma generate
-
-# Run database migrations
-npx prisma migrate dev
-
-# Start development server
-npm run start:dev
-```
-
-The backend will run on `http://localhost:8000`
-
-### Frontend Setup
-
-```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-The frontend will run on `http://localhost:5173` (default Vite port)
-
----
 
 ## Running the Application
 
