@@ -1,4 +1,4 @@
-# Task Management Application (CATI Challenge)
+# To do App
 
 A full-stack task management application with a Kanban-style board interface. Users can create lists and tasks with priorities, descriptions, and due dates.
 
