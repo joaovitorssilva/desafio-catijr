@@ -37,5 +37,5 @@ export class CreateTaskDto {
 
   @IsInt()
   @IsOptional()
-  position?: number
+  position?: number;
 }

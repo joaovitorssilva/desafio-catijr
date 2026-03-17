@@ -7,14 +7,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ListsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createListDto: CreateListDto) {
+  async create(createListDto: CreateListDto, userId: number) {
     return await this.prisma.list.create({
-      data: createListDto,
+      data: {
+        ...createListDto,
+        userId,
+      },
     });
   }
 
-  async findAll() {
+  async findAll(userId: number) {
     return await this.prisma.list.findMany({
+      where: { userId },
       include: {
         tasks: {
           orderBy: {
@@ -25,9 +29,9 @@ export class ListsService {
     });
   }
 
-  async findOne(id: number) {
-    return await this.prisma.list.findUnique({
-      where: { id },
+  async findOne(id: number, userId: number) {
+    return await this.prisma.list.findFirst({
+      where: { id, userId },
       include: {
         tasks: {
           orderBy: {
@@ -38,22 +42,20 @@ export class ListsService {
     });
   }
 
-  async update(id: number, updateListDto: UpdateListDto) {
+  async update(id: number, updateListDto: UpdateListDto, userId: number) {
     return await this.prisma.list.update({
-      where: { id },
+      where: { id, userId },
       data: updateListDto,
     });
   }
 
-  async remove(id: number) {
-    // Delete all tasks associated with this list first
+  async remove(id: number, userId: number) {
     await this.prisma.task.deleteMany({
-      where: { listId: id },
+      where: { listId: id, userId },
     });
 
-    // Then delete the list
     return await this.prisma.list.delete({
-      where: { id },
+      where: { id, userId },
     });
   }
 }
