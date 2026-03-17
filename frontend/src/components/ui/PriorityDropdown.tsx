@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import type { Priority } from '../types/api';
+import type { Priority } from '../../types/api';
 import { PriorityTag } from './PriorityTag';
 import { BsCaretDownFill } from 'react-icons/bs';
 
@@ -63,7 +63,7 @@ export function PriorityDropdown({ value, onChange, disabled = false }: Priority
         className={`flex items-center px-2 py-1 gap-5 rounded border border-line ${disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:opacity-80'} transition duration-200`}
       >
         <PriorityTag priority={value} />
-        <BsCaretDownFill className={`text-white ${isOpen ? 'rotate-180 transition duration-300 ' : ''}`}/>
+        <BsCaretDownFill className={`text-white ${isOpen ? 'rotate-180 transition duration-300 ' : ''}`} />
       </button>
 
       {isOpen && (

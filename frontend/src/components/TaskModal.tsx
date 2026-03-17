@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createTask, updateTaskById, deleteTaskById } from "../api/endpoints/task";
-import { PriorityDropdown } from "./PriorityDropdown";
+import { PriorityDropdown } from "./ui/PriorityDropdown";
 import { DeleteModal } from "./ui/DeleteModal";
 import { BsArrowBarRight, BsFillCalendarWeekFill } from "react-icons/bs";
 import { TaskFinishButton } from "./TaskFinishButton";
@@ -19,15 +19,18 @@ interface TaskModalProps {
 }
 
 export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }: TaskModalProps) {
-  // Initialize state based on mode
+  // Initialize state based on mode (edit or create new task)
   const [title, setTitle] = useState(mode === 'edit' && task ? task.title : "");
   const [description, setDescription] = useState(mode === 'edit' && task ? (task.description || "") : "");
   const [priority, setPriority] = useState<Priority | "">(mode === 'edit' && task ? (task.priority || "") : "");
   const [date, setDate] = useState<Date | null>(mode === 'edit' && task && task.expectedFinishDate ? new Date(task.expectedFinishDate) : null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [error, setError] = useState("")
+  const [priorityError, setPriorityError] = useState("")
   const { showToast } = useToast();
 
   const handleSubmit = async () => {
+
     try {
       const taskData = {
         title: title,
@@ -35,6 +38,17 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
         priority: priority === "" ? undefined : priority,
         expectedFinishDate: date ? date.toISOString() : null,
       };
+
+      if (title.trim() === "") {
+        setError("Título não pode estar vazio");
+        return
+      }
+
+      if (priority === "") {
+        setPriorityError("Prioridade não pode estar vazia");
+        return
+      }
+
 
       if (mode === 'edit' && task) {
         await updateTaskById(task.id, taskData);
@@ -66,7 +80,6 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
     }
   };
 
-  const isFormValid = title.trim() !== "";
 
   return (
     <>
@@ -81,7 +94,7 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
         >
 
           {/*============HEADER============ */}
-          
+
           <div className="flex items-center justify-between mb-4 px-17">
             <button
               onClick={onClose}
@@ -105,8 +118,13 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
               placeholder="Título"
               className="font-bold text-3xl text-white bg-transparent rounded-md p-2  focus:outline-none focus:ring ring-white transition duration-300 ease-out placeholder:text-date-text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value)
+                setError("")
+              }}
             />
+            {error && <p className="text-danger/90 text-sm">{error}</p>}
+
 
             <hr className="text-line" />
 
@@ -115,7 +133,6 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
                 Data de conclusão
               </span>
               <div className="flex items-center p-2 gap-3 text-sm rounded border border-line bg-transparent shrink-0">
-                <BsFillCalendarWeekFill className="w-4 h-4 text-white" />
                 <DatePicker
                   selected={date}
                   onChange={(newDate: Date | null) => setDate(newDate)}
@@ -126,6 +143,8 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
                   popperClassName="z-50"
                   minDate={new Date()}
                 />
+                <BsFillCalendarWeekFill className="w-4 h-4 text-white" />
+
               </div>
             </div>
 
@@ -133,12 +152,16 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
               <span className="font-semibold text-white">
                 Prioridade
               </span>
-              
+
               <PriorityDropdown
                 value={priority}
-                onChange={(newPriority) => setPriority(newPriority)}
+                onChange={(newPriority) => {
+                  setPriority(newPriority)
+                  setPriorityError("")
+                }}
               />
             </div>
+            {priorityError && <p className="text-danger/90 text-sm">{priorityError}</p>}
 
             <hr className="text-line" />
 
@@ -161,9 +184,8 @@ export function TaskModal({ listId, refetchLists, isOpen, onClose, task, mode }:
 
               <button
                 onClick={handleSubmit}
-                disabled={!isFormValid}
-                className={`text-white font-semibold p-2 rounded w-full transition duration-300 ease-out bg- bg-options-button-pressed hover:bg-options-button-hover cursor-pointer  ${!isFormValid ? ' cursor-not-allowed' : ''
-                  }`}
+                // disabled={!isFormValid}
+                className={`text-white font-semibold p-2 rounded w-full transition duration-300 ease-out bg- bg-options-button-pressed hover:bg-options-button-hover cursor-pointer  `}
               >
                 {mode === 'edit' ? 'Atualizar' : 'Salvar'}
               </button>

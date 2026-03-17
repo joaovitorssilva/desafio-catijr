@@ -1,5 +1,5 @@
 import { BsFillCalendarWeekFill } from "react-icons/bs";
-import { PriorityTag } from "./PriorityTag";
+import { PriorityTag } from "./ui/PriorityTag";
 import { TaskFinishButton } from "./TaskFinishButton";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

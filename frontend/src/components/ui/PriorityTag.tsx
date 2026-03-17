@@ -1,4 +1,4 @@
-import type { Priority } from '../types/api';
+import type { Priority } from '../../types/api';
 
 const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
   { value: 'LOW', label: 'Baixa Prioridade' },

@@ -1,20 +1,33 @@
-import { BsBellFill } from "react-icons/bs";
-import { MdAccountCircle } from "react-icons/md";
+import { Link } from "../pages/Link";
+import { useAuth } from "../contexts/AuthContext";
+import { UserMenu } from "./UserMenu";
 
 export function Navbar() {
+    const { isAuthenticated } = useAuth()
+
     return (
         <>
             <nav className='bg-linear-to-r from-bgLight to-bgDark shadow-md flex items-center justify-between w-full px-10 py-3 cursor-pointer text-white'>
-                <div>
-                    <p className='text-base sm:text-xl font-extrabold tracking-wider'>Minhas Tarefas</p>
+
+                <div className="flex items-center gap-2">
+
+                    <Link
+                        to="/"
+                        className="text-base sm:text-xl font-extrabold tracking-wider"                    >
+                        Boardly
+                    </Link>
                 </div>
                 <div className='flex gap-3 items-center'>
-                    <div >
-                        <BsBellFill className="w-full h-6 hover:bg-options-button-hover transition duration-150 ease-in" />
-                    </div>
-                    <div>
-                        <MdAccountCircle className="w-full h-6 hover:bg-options-button-hover transition duration-150 ease-in " />
-                    </div>
+                    {isAuthenticated ? (
+                        <UserMenu />
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="text-sm px-3 py-1.5 rounded hover:bg-options-button-hover transition duration-150"
+                        >
+                            Log in
+                        </Link>
+                    )}
                 </div>
             </nav>
         </>

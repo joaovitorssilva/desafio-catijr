@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BsFillPlusCircleFill, BsFillXCircleFill, BsXCircle } from 'react-icons/bs';
+import { BsFillPlusCircleFill, BsFillXCircleFill } from 'react-icons/bs';
 
 interface CreateListModalProps {
   isOpen: boolean;
