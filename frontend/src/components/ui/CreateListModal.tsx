@@ -45,7 +45,7 @@ export function CreateListModal({ isOpen, onClose, onSubmit, existingListNames }
       onClick={handleClose}
     >
       <div
-        className="bg-bg p-4 rounded shadow-lg w-full max-w-md relative flex flex-col gap-2"
+        className="bg-bg p-4 rounded-lg border shadow-lg w-full max-w-md relative flex flex-col gap-2"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -65,7 +65,7 @@ export function CreateListModal({ isOpen, onClose, onSubmit, existingListNames }
         <input
           type="text"
           value={listNameInput}
-          className="p-2 border-2 border-stone-100/10 rounded-xl focus:outline-none focus:ring focus:ring-white hover:ring hover:ring-white transition duration-200"
+          className="p-2 border border-line rounded-xl focus:outline-none focus:ring focus:ring-line"
           onChange={(e) => {
             setListNameInput(e.target.value);
             setError("");
@@ -75,7 +75,7 @@ export function CreateListModal({ isOpen, onClose, onSubmit, existingListNames }
         {error && <p className="text-danger/90 text-sm">{error}</p>}
         <button
           onClick={handleSubmit}
-          className="mt-6 bg-white text-black font-extrabold p-1 rounded-xl hover:bg-options-button-hover hover:text-white transition duration-200 ease-in-out cursor-pointer"
+          className="mt-6 font-extrabold p-2 rounded-xl bg-linec hover:bg-options-button-pressed hover:text-white transition duration-200 ease-in-out cursor-pointer"
         >
           Criar Lista
         </button>
