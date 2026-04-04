@@ -27,7 +27,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       {toast && (
         <div
-          className={`fixed flex items-center gap-4 top-16 left-1/2 -translate-x-1/2 px-4 py-3 rounded-xl bg-bg border border-white shadow-lg z-[100] animate-fadeIn ${
+          className={`fixed flex items-center gap-4 top-16 left-1/2 -translate-x-1/2 px-4 py-3 rounded-xl bg-bg border border-white shadow-lg z-100 animate-fadeIn ${
             toast.type === 'success' ? ' text-success' : 'text-danger'
           }`}
         >

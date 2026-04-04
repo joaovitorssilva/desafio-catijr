@@ -127,7 +127,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists, isDragOverlay
   return (
     <main
       ref={isDragOverlay ? undefined : setNodeRef}
-      className={`border border-line rounded-xl px-4 pt-4 pb-8 h-fit w-sm md:w-md gap-4 shrink-0 ${isOver ? 'ring-2 ring-blue-400' : ''} ${isDragOverlay ? 'w-sm md:w-md' : ''}`}
+      className={`border border-line rounded-xl px-4 pt-4 pb-8 h-fit w-sm md:w-md gap-4 shrink-0 ${isOver ? 'ring-2 ring-lime-400' : ''} ${isDragOverlay ? 'w-sm md:w-md' : ''}`}
     >
       {/* List Title with Options */}
       {!isDragOverlay && (
@@ -140,12 +140,12 @@ export const ListComponent = ({ id, name, propTasks, refetchLists, isDragOverlay
               onChange={(e) => setEditTitle(e.target.value)}
               onKeyDown={handleKeyDown}
               onBlur={saveTitle}
-              className="text-white text-3xl font-bold border-b-2 border-white mr-10 w-full appearance-none focus:outline-none! caret-white"
+              className="text-zinc-50 text-3xl font-bold border-b-2 border-white mr-10 w-full appearance-none focus:outline-none! caret-white"
             />
           ) : (
             <h2
               onClick={handleTitleClick}
-              className="text-white font-bold text-3xl cursor-pointer flex-1"
+              className="text-zinc-50 font-bold text-3xl cursor-pointer flex-1"
             >
               {name}
             </h2>
@@ -155,7 +155,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists, isDragOverlay
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="text-white hover:bg-options-button-hover rounded p-1 transition duration-200"
+              className="text-zinc-50 hover:bg-options-button-hover rounded p-1 transition duration-200"
               aria-label="List options"
             >
               <BsThreeDots className="w-5 h-5" />
@@ -166,7 +166,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists, isDragOverlay
               <div className="absolute right-0 top-full mt-1 bg-bg border border-line rounded-md py-1 z-10 min-w-[120px]">
                 <button
                   onClick={handleRenameClick}
-                  className="flex items-center justify-center gap-2 w-full text-left p-2 text-white hover:bg-options-button-hover transition ease-out duration-300 text-sm rounded-sm"
+                  className="flex items-center justify-center gap-2 w-full text-left p-2 text-zinc-50 hover:bg-options-button-hover transition ease-out duration-300 text-sm rounded-sm"
                 >
                   <BsFillPencilFill />
                   Renomear
@@ -199,7 +199,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists, isDragOverlay
               />
             ))
           ) : (
-            <p className="text-white text-sm"></p>
+            <p className="text-zinc-50 text-sm"></p>
           )}
         </div>
       </SortableContext>

@@ -5,7 +5,9 @@ const api = axios.create({
   baseURL: 'http://localhost:8000',
 })
 
+// prevent multiple simultaneous refresh attempts
 let isRefreshing = false
+//
 let failedQueue: Array<{
   resolve: (token: string) => void
   reject: (error: Error) => void
@@ -22,6 +24,7 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = []
 }
 
+// attaches Authorization: Bearer <token> header to every request if token exists in localStorage
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('access_token')
   if (token) {

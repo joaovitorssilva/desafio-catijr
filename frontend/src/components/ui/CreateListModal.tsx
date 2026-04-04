@@ -20,7 +20,7 @@ export function CreateListModal({ isOpen, onClose, onSubmit, existingListNames }
       return;
     }
 
-    if (existingListNames.includes(listNameInput.trim())) {
+    if (existingListNames.some(n => n.toLowerCase() === listNameInput.trim().toLowerCase())) {
       setError("Já existe uma lista com este nome");
       return;
     }
@@ -41,43 +41,48 @@ export function CreateListModal({ isOpen, onClose, onSubmit, existingListNames }
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 bg-opacity-50 z-50 flex items-center justify-center text-white"
+      className="fixed inset-0 bg-black/80 bg-opacity-50 z-50 flex items-center justify-center text-zinc-50"
       onClick={handleClose}
     >
       <div
-        className="bg-bg p-4 rounded-lg border shadow-lg w-full max-w-md relative flex flex-col gap-2"
+        className="bg-zinc-900 p-4 rounded-lg border shadow-lg w-full max-w-sm relative flex flex-col gap-2"
         onClick={(e) => e.stopPropagation()}
       >
 
         <div className="flex item-center justify-between">
-          <p className="text-white text-lg font-semibold">Criar Lista</p>
-
+          <p className="text-zinc-50 text-lg font-semibold">
+            Criar Lista
+          </p>
           <button onClick={handleClose}
           >
             <BsFillXCircleFill
-              className=" text-white text-xl hover:text-options-button-hover transition ease-out duration-300 cursor-pointer"
-
+              className=" text-zinc-50 text-xl hover:text-options-button-hover transition ease-out duration-300 cursor-pointer"
             />
           </button>
         </div>
 
-        <p className="flex mt-4">Nome da Lista:</p>
+        <p className="flex mt-4">Nome:</p>
         <input
           type="text"
           value={listNameInput}
-          className="p-2 border border-line rounded-xl focus:outline-none focus:ring focus:ring-line"
+          className="p-2 border rounded-xl focus:outline-none focus:ring focus:ring-line"
           onChange={(e) => {
             setListNameInput(e.target.value);
             setError("");
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit(e as unknown as React.MouseEvent);
+            }
+          }}
           autoFocus
         />
-        {error && <p className="text-danger/90 text-sm">{error}</p>}
+        {error && <p className="ml-1 text-sm text-danger/90 ">{error}</p>}
         <button
           onClick={handleSubmit}
-          className="mt-6 font-extrabold p-2 rounded-xl bg-linec hover:bg-options-button-pressed hover:text-white transition duration-200 ease-in-out cursor-pointer"
+          className="mt-6 bg-options-button-hover text-zinc-50 font-bold p-2 rounded-xl hover:bg-options-button-pressed transition duration-300 ease-out cursor-pointer"
         >
-          Criar Lista
+          Adicionar
         </button>
       </div>
     </div>
@@ -93,7 +98,7 @@ export function AddListButton({ onClick }: AddListButtonProps) {
     <div className="rounded-md flex flex-col gap-4 min-w-[300px] w-[300px] h-min shrink-0 relative top-2">
       <button
         onClick={onClick}
-        className="text-white w-full flex items-center gap-2 font-semibold text-sm p-2 rounded-xl hover:bg-options-button-hover transition duration-300 ease-out cursor-pointer"
+        className="text-zinc-50 w-full flex items-center gap-2 font-semibold text-sm p-2 rounded-xl hover:bg-options-button-hover transition duration-300 ease-out cursor-pointer"
       >
         <BsFillPlusCircleFill className="w-6 h-6" />
         Nova Lista

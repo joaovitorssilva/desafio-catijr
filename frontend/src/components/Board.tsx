@@ -154,7 +154,7 @@ export function Board({ lists, refetchLists }: BoardProps) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="bg-bg flex flex-col md:flex-row gap-4 overflow-x-auto p-8 min-h-screen w-full">
+      <div className="bg-zinc-800 flex flex-col md:flex-row gap-4 overflow-x-auto p-8 min-h-screen w-full">
         {localLists.map((list) => (
           <ListComponent
             key={list.id}

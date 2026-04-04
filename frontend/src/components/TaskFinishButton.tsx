@@ -34,13 +34,13 @@ export function TaskFinishButton({ taskId, finishDate, onSuccess }: TaskFinishBu
             <span className={`w-8 h-8 rounded-full border border-dashed flex items-center justify-center transition duration-300 ease-out ${isTaskFinished
                 ? 'border-lowPrioText text-lowPrioText group-hover:border-[#15C384] group-hover:text-[#15C384]'
                 : 'border-white text-white group-hover:border-[#15C384] group-hover:text-[#15C384]'
-            }`}>
+                }`}>
                 <BsCheck2 className="w-4 h-4" />
             </span>
             <span className={`transition duration-300 ease-out ${isTaskFinished
                 ? 'text-lowPrioText group-hover:text-[#15C384]'
                 : 'text-white group-hover:text-[#15C384]'
-            }`}>
+                }`}>
                 {isTaskFinished ? 'Finalizado' : 'Finalizar'}
             </span>
         </button>

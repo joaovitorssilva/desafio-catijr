@@ -81,13 +81,13 @@ export function TaskCard({ task, onClick, refetchLists }: TaskCardProps) {
             </div>
 
             {/* Task Title */}
-            <h3 className={`text-white text-base md:text-[19.2px] font-semibold mb-1 ${isTaskFinished ? 'line-through' : ''
+            <h3 className={`text-white text-base md:text-lg font-semibold mb-1 ${isTaskFinished ? 'line-through' : ''
                 }`}>
                 {task.title}
             </h3>
 
             {/* Task Description */}
-            <p className={`text-white mb-3 text-[13.3px] md:text-base ${isTaskFinished ? 'line-through' : ''
+            <p className={`text-white mb-3 text-sm md:text-base ${isTaskFinished ? 'line-through' : ''
                 }`}>
                 {task.description}
             </p>
