@@ -1,9 +1,9 @@
 import { BsFillCalendarWeekFill } from "react-icons/bs";
-import { PriorityTag } from "./ui/PriorityTag";
+import { PriorityTag } from "../ui/PriorityTag";
 import { TaskFinishButton } from "./TaskFinishButton";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { Task } from "../types/api";
+import type { Task } from "../../types/api";
 
 interface TaskCardProps {
     task: Task;

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
-import { Board } from "./components/Board";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Board } from "./pages/BoardPage";
 import { ToastProvider } from "./contexts/ToastContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-
 import { getLists } from "./api/endpoints/Lists";
 import type { List } from "./types/api";
+import { Sidebar } from "./components/layout/Sidebar";
+import { Navbar } from "./components/layout/Navbar";
+import { DashboardPage } from "./pages/DashboardPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -21,13 +22,18 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function BoardPage({ lists, refetchLists }: { lists: List[], refetchLists: () => Promise<void> }) {
+function AppLayout() {
   return (
-    <ToastProvider>
+    <div className="flex flex-col h-screen bg-bg overflow-hidden">
       <Navbar />
-      <Board lists={lists} refetchLists={refetchLists} />
-    </ToastProvider>
-  );
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  )
 }
 
 function AppContent() {
@@ -64,13 +70,16 @@ function AppContent() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route
-        path="/board"
         element={
           <ProtectedRoute>
-            <BoardPage lists={lists} refetchLists={fetchLists} />
+            <AppLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route path="/board" element={<Board lists={lists} refetchLists={fetchLists} />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -80,7 +89,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

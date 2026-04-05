@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import type { Task } from '../types/api'
+import type { Task } from '../../types/api'
 import { TaskCard } from './TaskCard';
 import { TaskModal } from './TaskModal';
-import { CreateTaskBtn } from './ui/CreateTaskBtn'
-import { DeleteModal } from './ui/DeleteModal';
-import { updateListById, deleteListById } from '../api/endpoints/Lists';
-import { useToast } from '../contexts/ToastContext';
+import { CreateTaskBtn } from './CreateTaskBtn'
+import { DeleteModal } from '../ui/DeleteModal';
+import { updateListById, deleteListById } from '../../api/endpoints/Lists';
+import { useToast } from '../../contexts/ToastContext';
 import { BsFillPencilFill, BsThreeDots } from 'react-icons/bs';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -127,7 +127,7 @@ export const ListComponent = ({ id, name, propTasks, refetchLists, isDragOverlay
   return (
     <main
       ref={isDragOverlay ? undefined : setNodeRef}
-      className={`border border-line rounded-xl px-4 pt-4 pb-8 h-fit w-sm md:w-md gap-4 shrink-0 ${isOver ? 'ring-2 ring-lime-400' : ''} ${isDragOverlay ? 'w-sm md:w-md' : ''}`}
+      className={`border border-line rounded-xl px-4 pt-4 pb-8 h-fit w-sm md:w-md gap-4 shrink-0 ${isOver ? 'ring-1 ring-zinc-50' : ''} ${isDragOverlay ? 'w-sm md:w-md' : ''}`}
     >
       {/* List Title with Options */}
       {!isDragOverlay && (

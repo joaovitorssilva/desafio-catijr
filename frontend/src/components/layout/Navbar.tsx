@@ -1,5 +1,5 @@
-import { Link } from "../pages/Link";
-import { useAuth } from "../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { UserMenu } from "./UserMenu";
 
 export function Navbar() {
@@ -7,13 +7,13 @@ export function Navbar() {
 
   return (
     <>
-      <nav className='bg-linear-to-r from-bgLight to-bgDark shadow-md flex items-center justify-between w-full px-10 py-3 cursor-pointer text-white'>
+      <nav className='bg-linear-to-r from-bgLight to-bgDark shadow-md flex items-center justify-between w-full px-10 py-3 cursor-pointer text-zinc-50'>
 
         <div className="flex items-center gap-2">
 
           <Link
             to="/"
-            className="text-base sm:text-xl font-extrabold tracking-wider"                    >
+            className="font-family-merriweather text-base sm:text-xl font-extrabold tracking-wider"                    >
             Boardly
           </Link>
         </div>

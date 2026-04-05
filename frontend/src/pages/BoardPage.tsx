@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import type { List, Task } from "../types/api";
 import { createList } from "../api/endpoints/Lists";
 import { updateTaskPosition } from "../api/endpoints/task";
-import { ListComponent } from "./ListComponent";
-import { CreateListModal, AddListButton } from "./ui/CreateListModal";
+
 import {
   DndContext,
   DragOverlay,
@@ -14,6 +13,8 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { AddListButton, CreateListModal } from "../components/board/CreateListModal";
+import { ListComponent } from "../components/board/ListComponent";
 
 interface BoardProps {
   lists: List[];
@@ -154,7 +155,7 @@ export function Board({ lists, refetchLists }: BoardProps) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="bg-zinc-800 flex flex-col md:flex-row gap-4 overflow-x-auto p-8 min-h-screen w-full">
+      <div className="bg-bg flex flex-col md:flex-row gap-4 overflow-x-auto p-8 min-h-screen w-full">
         {localLists.map((list) => (
           <ListComponent
             key={list.id}

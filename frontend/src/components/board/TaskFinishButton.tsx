@@ -1,5 +1,5 @@
 import { BsCheck2 } from "react-icons/bs";
-import { updateTaskById } from "../api/endpoints/task";
+import { updateTaskById } from "../../api/endpoints/task";
 
 interface TaskFinishButtonProps {
     taskId: number;

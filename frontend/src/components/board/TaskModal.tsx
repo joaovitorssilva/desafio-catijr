@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { createTask, updateTaskById, deleteTaskById } from "../api/endpoints/task";
-import { PriorityDropdown } from "./ui/PriorityDropdown";
-import { DeleteModal } from "./ui/DeleteModal";
+import { createTask, updateTaskById, deleteTaskById } from "../../api/endpoints/task";
+import { PriorityDropdown } from "../ui/PriorityDropdown";
+import { DeleteModal } from "../ui/DeleteModal";
 import { BsArrowBarRight, BsFillCalendarWeekFill } from "react-icons/bs";
 import { TaskFinishButton } from "./TaskFinishButton";
 import DatePicker from "react-datepicker";
 import { ptBR } from 'date-fns/locale';
-import { useToast } from "../contexts/ToastContext";
-import type { Priority, Task } from "../types/api";
+import { useToast } from "../../contexts/ToastContext";
+import type { Priority, Task } from "../../types/api";
 
 interface TaskModalProps {
   listId: number;
